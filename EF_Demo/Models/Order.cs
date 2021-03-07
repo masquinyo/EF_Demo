@@ -8,6 +8,7 @@ namespace EF_Demo.Models
     public class Order
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderId { get; set; }
 
         [ForeignKey(nameof(CustomerId))]
@@ -19,6 +20,6 @@ namespace EF_Demo.Models
 
         public decimal PayedAmount { get; set; }
 
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EF_Demo.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace EF_Demo.Context
 {
@@ -11,7 +12,9 @@ namespace EF_Demo.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=127.0.0.1,1433;Database=ef_demo;User Id=sa;Password=reallyStrongPwd123;");
+            optionsBuilder
+                .UseLazyLoadingProxies()
+                .UseSqlServer("Server=127.0.0.1,1433;Database=ef_demo;User Id=sa;Password=reallyStrongPwd123;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,6 +56,17 @@ namespace EF_Demo.Context
                 PayedAmount = 40m,
             });
 
+            modelBuilder.Entity<OrderProduct>().HasData(new OrderProduct {
+                OrderProductId = 1,
+                OrderId = 1,
+                ProductId = 1,
+            },
+            new OrderProduct {
+                OrderProductId = 2,
+                OrderId = 1,
+                ProductId = 2,
+            });
+
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 Cost = 20m,
@@ -69,6 +83,7 @@ namespace EF_Demo.Context
 
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderProduct> OrderProducts { get; set; }
         public virtual DbSet<Product> Products { get; set; }
     }
 }
